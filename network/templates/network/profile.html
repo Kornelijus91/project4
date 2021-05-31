@@ -1,0 +1,31 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %} 
+    <script src="{% static 'network/profile.js' %}"></script>
+    <div class="container-fluid tweet">
+        <div class="row justify-content-md-left">
+            <div class="col-md-auto">
+            <h3>{{ username }}</h3>
+            </div>
+            <div class="col-md-auto">
+                {% if user.id != posterid %}
+                    <button class="btn btn-primary" id="follow" data-userid="{{ posterid }}">Follow</button>
+                {% endif %}
+            </div>
+        </div>
+        <p id="following">Following: {{ following }}</p>
+        <p id="followers">Followers: {{ followers }}</p>
+        {% for post in posts %}
+            <div class="container-fluid tweet">
+                <h3>{{ username }}</h3>
+                <p class="message">{{ post.body }}</p>
+                <p class="timestamp">{{ post.timestamp }}</p>
+                <img src="{% static 'network/heart.png' %}" id="likebtn" data-postid="{{ post.id }}"> {{ post.likes }}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+
+   

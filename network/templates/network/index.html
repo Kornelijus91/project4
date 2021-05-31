@@ -1,0 +1,50 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <script src="{% static 'network/allposts.js' %}"></script>
+    <div id="allposts" class="container-fluid">
+        {% if user.is_authenticated %}
+            <form class="postform" id ="newpost" action ="" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" class="btn btn-primary" value="Post">
+            </form>
+        {% endif %}
+        {% for post in posts %}
+            <div class="container-fluid tweet" id="{{ post.id }}">
+                <a href="{% url 'profile' post.user.username %}"><h3>{{ post.user.username }}</h3></a>
+                {% if user.id == post.user.id %}
+                    <button class="btn btn-outline-primary editpost" data-postid="{{ post.id }}">Edit</button>
+                    <div class="container-fluid editposttext" style="display:none">
+                        <textarea class="edittextarea"></textarea></br>
+                        <button class="btn btn-outline-primary saveedit" data-userid="{{ user.id }}">Save</button>
+                    </div>
+                {% endif %}
+                <p class="message">{{ post.body }}</p>
+                <p class="timestamp">{{ post.timestamp }}</p>
+                <div class="likegroup">
+                    <img src="{% static 'network/heart.png' %}" class="likebtn" data-postid="{{ post.id }}"> 
+                    <p class="likecount">{{ post.likes }}</p>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="pagination">
+            <span class="step-links">
+                {% if posts.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ posts.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+                </span>
+
+                {% if posts.has_next %}
+                    <a href="?page={{ posts.next_page_number }}">next</a>
+                    <a href="?page={{ posts.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+{% endblock %}
